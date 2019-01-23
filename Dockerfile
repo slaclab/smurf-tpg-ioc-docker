@@ -9,10 +9,6 @@ RUN mkdir -p ${APP_TOP}
 WORKDIR ${APP_TOP}
 # Copy the source code
 ADD . .
-# Path the configuration files for the container environment
-RUN sed -i -e 's|^PACKAGE_AREA=.*|PACKAGE_AREA=${PACKAGE_SITE_TOP}|g' configure/CONFIG_SITE.Common.rhel6-x86_64
-RUN sed -i -e 's|^CROSS_COMPILER_TARGET_ARCHS\s*=.*|CROSS_COMPILER_TARGET_ARCHS=|g' configure/CONFIG_SITE
-RUN rm -rf rm configure/CONFIG_SITE.Common.linuxRT-x86_64
 # Build the application
 RUN make distclean && make
 

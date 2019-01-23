@@ -4,7 +4,7 @@ LINUX_VERSION=rhel6
 #PACKAGE_AREA=/afs/slac/g/lcls/package
 
 # Use the following line for South Pole TPG
-PACKAGE_AREA=/usr/local/controls/package
+PACKAGE_AREA=${PACKAGE_SITE_TOP}
 
 
 # ========================================================================================================================
