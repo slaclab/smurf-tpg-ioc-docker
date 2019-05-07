@@ -4,6 +4,8 @@ ARG APP_TOP=/root/Tpg
 # Create the builder image
 FROM jesusvasquez333/smurf-epics-slac:R1.0.0 as builder
 ARG APP_TOP
+# Add ipmitool to the image
+RUN yum -y update && yum install -y ipmitool && yum clean all -y
 # Set some EPICS env vars
 ENV BASE_MODULE_VERSION R3.15.5-1.0
 # Prepare the build directory
@@ -29,6 +31,8 @@ ENV IOC_DATA /data/epics/ioc/data
 ARG IOC_NAME=sioc-smrf-ts01
 # Copy the IOC produced during the building stage
 COPY --from=builder ${APP_TOP} ${APP_TOP}
+# Copy the ipmitool binary
+COPY --from=builder /usr/bin/ipmitool /usr/bin/ipmitool
 # Go to the application top level
 WORKDIR ${APP_TOP}
 # Start the IOC using the default shelfmanager name and slot number
