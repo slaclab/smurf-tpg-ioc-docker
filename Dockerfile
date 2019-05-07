@@ -31,5 +31,5 @@ ARG IOC_NAME=sioc-smrf-ts01
 COPY --from=builder ${APP_TOP} ${APP_TOP}
 # Go to the application top level
 WORKDIR ${APP_TOP}
-# Start the IOC by default
+# Start the IOC using the default shelfmanager name and slot number
 ENTRYPOINT ["./start_ioc.sh","-S", "shm-smrf-sp01", "-N", "2"]

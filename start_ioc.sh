@@ -92,7 +92,7 @@ case ${key} in
     shift
     ;;
     -p|--prefix)
-    preifx="$2"
+    prefix="$2"
     shift
     ;;
     -h|--help)
