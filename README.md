@@ -12,7 +12,7 @@ The name of the IOC used in this project is **sioc-smrf-ts01**.
 
 The IOC source code was taken from SLAC's version, hosted in an internal git repository.
 
-The code was manually checkout from AFS-based git (tagged version **R1.7.5**), cleaned (removed SLAC's IOCs and some empty or not relevant files), and copied into this repository.
+The code was manually checkout from AFS-based git (tagged version **R1.7.3-1.3.0**), cleaned (removed SLAC's IOCs and some empty or not relevant files), and copied into this repository.
 
 ## Building the image
 

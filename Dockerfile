@@ -4,11 +4,15 @@ ARG APP_TOP=/root/Tpg
 # Create the builder image
 FROM jesusvasquez333/smurf-epics-slac:R1.0.0 as builder
 ARG APP_TOP
+# Set some EPICS env vars
+ENV BASE_MODULE_VERSION R3.15.5-1.0
 # Prepare the build directory
 RUN mkdir -p ${APP_TOP}
 WORKDIR ${APP_TOP}
 # Copy the source code
-ADD . .
+ADD Tpg .
+ADD start_ioc.sh .
+
 # Build the application
 RUN make distclean && make
 
@@ -25,7 +29,7 @@ ENV IOC_DATA /data/epics/ioc/data
 ARG IOC_NAME=sioc-smrf-ts01
 # Copy the IOC produced during the building stage
 COPY --from=builder ${APP_TOP} ${APP_TOP}
-# Go to the IOC top level
-WORKDIR ${APP_TOP}/iocBoot/${IOC_NAME}
+# Go to the application top level
+WORKDIR ${APP_TOP}
 # Start the IOC by default
-CMD ["./st.cmd"]
+ENTRYPOINT ["./start_ioc.sh","-S", "shm-smrf-sp01", "-N", "2"]
