@@ -30,8 +30,22 @@ You should have this directory in your host CPU, and map it to */data/* inside t
 
 You also need to publish the EPIC channel access ports (tcp and udp ports 5064, 5065 by default) to the host if you want external clients to have access to the IOC's PVs. (**Note**: Other containers running in the same host will have access to these ports even if they are not published to the host).
 
-When the container is started, by default the IOC is started inside it.
+When the container is started, by default the IOC is started using the **start_ioc.sh** script. This script accept the following arguments:
 
+```
+start_ioc.sh [-S|--shelfmanager <shelfmanager_name> -N|--slot <slot_number>]
+             [-a|--addr <fpga_ip>] [-p|--prefix <epics_prefix>] [-h|--help]
+
+    -S|--shelfmanager <shelfmanager_name> : ATCA shelfmanager node name or IP address. Must be used with -N.
+    -N|--slot         <slot_number>       : ATCA crate slot number. Must be used with -S.
+    -a|--addr         <fpga_ip>           : FPGA IP address. If defined, -S and -N are ignored.
+    -p|--prefix       <epics_prefix>      : PV name prefix. Defaults to 'TPG:SMRF:1'
+    -h|--help                             : Show this message.
+```
+
+If -a if not defined, then -S and -N must both be defined, and the FPGA IP address will be automatically calculated from the crate ID and slot number. If -a if defined, -S and -N are ignored.
+
+By default, the docker image is started setting the shelfmanager to `shm-smrf-sp01`, and the slot number to `2`, as defined in the `ENTRYPOINT` section in the `Dockerfile`.
 The container can be run in two ways: in the foreground or in the background.
 
 ### Run the container in the foreground
@@ -42,13 +56,13 @@ You can start the container in the foreground with this command
 docker run -ti --rm --name smurf-tpg-ioc \
 -v <LOCAL_DATA_PATH>:/data \
 -p 5064:5064 -p 5065:5065 -p 5064:5064/udp -p 5065:5065/udp \
-jesusvasquez333/smurf-tpg-ioc:<VERSION>
+tidair/smurf-tpg-ioc:<VERSION>
 ```
 
 Where:
-- **<LOCAL_DATA_PATH>**: is the absolute path of the root of the IOC data directory in the host local disk. For example, if in the host this directory is `/data/epics/ioc/data/sioc-smrf-ts01`, then **<LOCAL_DATA_PATH>** = **/data**
+- **LOCAL_DATA_PATH**: is the absolute path of the root of the IOC data directory in the host local disk. For example, if in the host this directory is `/data/epics/ioc/data/sioc-smrf-ts01`, then **LOCAL_DATA_PATH** = **/data**
 By default the container will start the IOC.
-- **<VERSION>**: is the tagged version of the container your want to run.
+- **VERSION**: is the tagged version of the container your want to run.
 
 ### Run the container in the background
 
