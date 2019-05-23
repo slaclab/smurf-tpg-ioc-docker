@@ -23,12 +23,13 @@ usage()
     echo
     echo "usage: ${script_name} [-S|--shelfmanager <shelfmanager_name> -N|--slot <slot_number>]"
     echo "                      [-a|--addr <fpga_ip>] [-p|--prefix <epics_prefix>] [-h|--help]"
+    echo
     echo "    -S|--shelfmanager <shelfmanager_name> : ATCA shelfmanager node name or IP address. Must be used with -N."
     echo "    -N|--slot         <slot_number>       : ATCA crate slot number. Must be used with -S."
     echo "    -a|--addr         <fpga_ip>           : FPGA IP address. If defined, -S and -N are ignored."
     echo "    -p|--prefix       <epics_prefix>      : PV name prefix. Defaults to 'TPG:SMRF:1'"
     echo "    -h|--help                             : Show this message."
-    echo ""
+    echo
     echo "If -a if not defined, then -S and -N must both be defined, and the FPGA IP address will be automatically calculated from the crate ID and slot number."
     echo "If -a if defined, -S and -N are ignored."
     echo
