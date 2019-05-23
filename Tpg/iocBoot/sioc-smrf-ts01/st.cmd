@@ -121,10 +121,8 @@ cpswLoadYamlFile("000TopLevel.yaml", "NetIODev", "", "${FPGA_IP}")
 # ===================================
 # Load ADC configuration from YAML file
 # ====================================
-cd ("${IOC_DATA}/sioc-smrf-ts01/yamlConfig")
-#cpswLoadConfigFile("configDump.yaml", "mmio/AmcCarrierTimingGenerator/ApplicationCore/AmcGenericAdcDacCore", "")
-cpswLoadConfigFile("configDump.yaml", "mmio/AmcCarrierTimingGenerator/ApplicationCore", "")
-
+cd ${TOP}
+cpswLoadConfigFile("config/configDump.yaml", "mmio/AmcCarrierTimingGenerator/ApplicationCore", "")
 
 cd ${TOP}
 
