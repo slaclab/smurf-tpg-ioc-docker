@@ -15,7 +15,7 @@ WORKDIR ${APP_TOP}
 ADD Tpg .
 ADD start_ioc.sh .
 # Copy the configuration files
-ADD config .
+ADD config config
 
 # Build the application
 RUN make distclean && make
