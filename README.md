@@ -72,7 +72,7 @@ You can start the container in the background with this command
 docker run -tid --rm --name smurf-tpg-ioc \
 -v <LOCAL_DATA_PATH>:/data \
 -p 5064:5064 -p 5065:5065 -p 5064:5064/udp -p 5065:5065/udp \
-jesusvasquez333/smurf-tpg-ioc:<VERSION>
+tidair/smurf-tpg-ioc:<VERSION>
 ```
 
 Where the parameters are the same explained in the previous case.
