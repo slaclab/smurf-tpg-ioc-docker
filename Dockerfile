@@ -13,7 +13,8 @@ RUN mkdir -p ${APP_TOP}
 WORKDIR ${APP_TOP}
 # Copy the source code
 ADD Tpg .
-ADD start_ioc.sh .
+# Copy the startup script
+ADD scripts/start_ioc.sh .
 # Copy the configuration files
 ADD config config
 
