@@ -18,19 +18,17 @@ The code was manually checkout from AFS-based git (tagged version **R1.7.3-1.3.0
 
 The provided script *build_docker.sh* will automatically build the docker image. It will tag the resulting image using the same git tag string (as returned by `git describe --tags --always`).
 
-## Running the container
+## Setup the host
 
-As any IOC at SLAC, this IOC need to a data directory where it will read and write its configuration setting (like for example autosave, iocAdmin, etc.). Inside the container, this IOC data directory is located in
+This IOC uses autosave and iocAdmin which persists its PV values. To do this, the host /data directory is mapped to /data inside the container. More specifically, the IOC data is located at the following path.
 
 ```
 /data/epics/ioc/data/sioc-smrf-ts01
 ```
 
-You should have this directory in your host CPU, and map it to */data/* inside the container.
+Open TCP UDP ports 5064 and 5065 on the docker container to access the IOC PVs from outside the host. No change is necessary to access the IOC PVs from within the same host, from for example pysmurf on the same host. 
 
-You also need to publish the EPIC channel access ports (tcp and udp ports 5064, 5065 by default) to the host if you want external clients to have access to the IOC's PVs. (**Note**: Other containers running in the same host will have access to these ports even if they are not published to the host).
-
-When the container is started, by default the IOC is started using the **start_ioc.sh** script. This script accept the following arguments:
+## Run using start_ioc.sh
 
 ```
 start_ioc.sh [-S|--shelfmanager <shelfmanager_name> -N|--slot <slot_number>]
@@ -43,17 +41,23 @@ start_ioc.sh [-S|--shelfmanager <shelfmanager_name> -N|--slot <slot_number>]
     -h|--help                             : Show this message.
 ```
 
-If -a if not defined, then -S and -N must both be defined, and the FPGA IP address will be automatically calculated from the crate ID and slot number. If -a if defined, -S and -N are ignored.
+If -a if not defined, then -S and -N must both be defined, and the FPGA IP address will be automatically calculated from the crate ID and slot number. If -a if defined, -S and -N are ignored. By default, the docker image is started setting the shelfmanager to `shm-smrf-sp01`, and the slot number to `2`, as defined in the `ENTRYPOINT` section in the `Dockerfile`.
 
-By default, the docker image is started setting the shelfmanager to `shm-smrf-sp01`, and the slot number to `2`, as defined in the `ENTRYPOINT` section in the `Dockerfile`.
-The container can be run in two ways: in the foreground or in the background.
+## Run using Docker
 
-### Run the container in the foreground
-
-You can start the container in the foreground with this command
+Run in the foreground.
 
 ```
 docker run -ti --rm --name smurf-tpg-ioc \
+-v <LOCAL_DATA_PATH>:/data \
+-p 5064:5064 -p 5065:5065 -p 5064:5064/udp -p 5065:5065/udp \
+tidair/smurf-tpg-ioc:<VERSION>
+```
+
+Run in the background.
+
+```
+docker run -tid --rm --name smurf-tpg-ioc \
 -v <LOCAL_DATA_PATH>:/data \
 -p 5064:5064 -p 5065:5065 -p 5064:5064/udp -p 5065:5065/udp \
 tidair/smurf-tpg-ioc:<VERSION>
@@ -64,22 +68,9 @@ Where:
 By default the container will start the IOC.
 - **VERSION**: is the tagged version of the container your want to run.
 
-### Run the container in the background
+### Interact with the Docker container
 
-You can start the container in the background with this command
-
-```
-docker run -tid --rm --name smurf-tpg-ioc \
--v <LOCAL_DATA_PATH>:/data \
--p 5064:5064 -p 5065:5065 -p 5064:5064/udp -p 5065:5065/udp \
-tidair/smurf-tpg-ioc:<VERSION>
-```
-
-Where the parameters are the same explained in the previous case.
-
-### Checking the status of the container
-
-You can check the status of running containers with the `docker ps` command. It will list the containers that are running at the moment.
+Confirm that the container is running.
 
 ```
 $ docker ps
@@ -87,10 +78,4 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 163326dec993        smurf-tpg-ioc       "./st.cmd"          31 seconds ago      Up 30 seconds                           awesome_raman
 ```
 
-### Attaching to the container running in the background
-
-You can attached to the container with the command `docker attach smurf-tpg-ioc`. And you can detached again pressing `CRTL+p` followed by `CRTL+q`.
-
-### Stop and container
-
-You can stop the container with the command `docker stop smurf-tpg-ioc`.
+You can attach to the container with the command `docker attach smurf-tpg-ioc`. Detatch with `CRTL+p` followed by `CRTL+q`. You can stop the container with the command `docker stop smurf-tpg-ioc`.
