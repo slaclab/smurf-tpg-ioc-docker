@@ -20,7 +20,7 @@ The provided script *build_docker.sh* will automatically build the docker image.
 
 ## Setup the host
 
-This IOC uses autosave and iocAdmin which persists its PV values. To do this, the host /data directory is mapped to /data inside the container. More specifically, the IOC data is located at the following path. The host will not start without these autosave files (see #2).
+This IOC uses autosave and iocAdmin which persists its PV values. To do this, the host /data directory is mapped to /data inside the container. More specifically, the IOC data is located at the following path. The host will not start without these autosave files (see https://github.com/slaclab/smurf-tpg-ioc-docker/issues/2).
 
 ```
 /data/epics/ioc/data/sioc-smrf-ts01
