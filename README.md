@@ -2,46 +2,29 @@
 
 ## Description
 
-This docker image, named **smurf-tpg-ioc** contains the SLAC's TPG IOC, modified for the SMuRF project.
-
-It is based on centos 6.10, and the IOC application is build using the *smurf-epics-slac* image, which contains all the SLAC's packages, EPICS base, and EPICS modules need to build this IOC.
-
-The name of the IOC used in this project is **sioc-smrf-ts01**.
+This repository can build the smurf-tpg-ioc docker image. This image runs SLAC's TPG IOC modified for SMuRF. This image depends on the smurf-epics-slac image, which runs Centos 6, and contains all the SLAC's packages, EPICS base, and EPICS modules needed to build this IOC. The name of the IOC used in this project is sioc-smrf-ts01.
 
 ## Source code
 
-The IOC source code was taken from SLAC's version, hosted in an internal git repository.
+The IOC source code was taken from SLAC's version, hosted in an internal git repository. The code was manually checkout from AFS-based git (tagged version **R1.7.3-1.3.0**), cleaned (removed SLAC's IOCs and some empty or not relevant files), and copied into this repository.
 
-The code was manually checkout from AFS-based git (tagged version **R1.7.3-1.3.0**), cleaned (removed SLAC's IOCs and some empty or not relevant files), and copied into this repository.
+## Build the image
 
-## Building the image
+```
+docker build
+```
 
-The provided script *build_docker.sh* will automatically build the docker image. It will tag the resulting image using the same git tag string (as returned by `git describe --tags --always`).
+There is currently no automated deploy process for this image. 
 
 ## Setup the host
 
-This IOC uses autosave and iocAdmin which persists its PV values. To do this, the host /data directory is mapped to /data inside the container. More specifically, the IOC data is located at the following path. The host will not start without these autosave files (see https://github.com/slaclab/smurf-tpg-ioc-docker/issues/2).
+The host must be setup before running the IOC. The IOC uses autosave and iocAdmin which persists its PV values. To do this, the host /data directory is mapped to /data inside the container. More specifically, the IOC data is located at the following path. The host will not start without autosave files (see https://github.com/slaclab/smurf-tpg-ioc-docker/issues/2) in the directory
 
 ```
 /data/epics/ioc/data/sioc-smrf-ts01
 ```
 
 Open TCP UDP ports 5064 and 5065 on the docker container to access the IOC PVs from outside the host. No change is necessary to access the IOC PVs from within the same host, from for example pysmurf on the same host. 
-
-## Run using start_ioc.sh
-
-```
-start_ioc.sh [-S|--shelfmanager <shelfmanager_name> -N|--slot <slot_number>]
-             [-a|--addr <fpga_ip>] [-p|--prefix <epics_prefix>] [-h|--help]
-
-    -S|--shelfmanager <shelfmanager_name> : ATCA shelfmanager node name or IP address. Must be used with -N.
-    -N|--slot         <slot_number>       : ATCA crate slot number. Must be used with -S.
-    -a|--addr         <fpga_ip>           : FPGA IP address. If defined, -S and -N are ignored.
-    -p|--prefix       <epics_prefix>      : PV name prefix. Defaults to 'TPG:SMRF:1'
-    -h|--help                             : Show this message.
-```
-
-If -a if not defined, then -S and -N must both be defined, and the FPGA IP address will be automatically calculated from the crate ID and slot number. If -a if defined, -S and -N are ignored. By default, the docker image is started setting the shelfmanager to `shm-smrf-sp01`, and the slot number to `2`, as defined in the `ENTRYPOINT` section in the `Dockerfile`.
 
 ## Run using Docker
 
@@ -79,3 +62,20 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 ```
 
 You can attach to the container with the command `docker attach smurf-tpg-ioc`. Detatch with `CRTL+p` followed by `CRTL+q`. You can stop the container with the command `docker stop smurf-tpg-ioc`.
+
+## Run using start_ioc.sh
+
+This IOC can also run outside Docker assuming the host was setup appropriately.
+
+```
+start_ioc.sh [-S|--shelfmanager <shelfmanager_name> -N|--slot <slot_number>]
+             [-a|--addr <fpga_ip>] [-p|--prefix <epics_prefix>] [-h|--help]
+
+    -S|--shelfmanager <shelfmanager_name> : ATCA shelfmanager node name or IP address. Must be used with -N.
+    -N|--slot         <slot_number>       : ATCA crate slot number. Must be used with -S.
+    -a|--addr         <fpga_ip>           : FPGA IP address. If defined, -S and -N are ignored.
+    -p|--prefix       <epics_prefix>      : PV name prefix. Defaults to 'TPG:SMRF:1'
+    -h|--help                             : Show this message.
+```
+
+If -a if not defined, then -S and -N must both be defined, and the FPGA IP address will be automatically calculated from the crate ID and slot number. If -a if defined, -S and -N are ignored. By default, the docker image is started setting the shelfmanager to `shm-smrf-sp01`, and the slot number to `2`, as defined in the `ENTRYPOINT` section in the `Dockerfile`.
