@@ -14,7 +14,9 @@ The IOC source code was taken from SLAC's version, hosted in an internal git rep
 docker build
 ```
 
-There is currently no automated deploy process for this image. 
+## Setup the carrier
+
+The carrier that runs this docker image must be flashed.
 
 ## Setup the host
 
