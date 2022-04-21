@@ -17,11 +17,16 @@ ADD config config
 RUN make distclean && make
 # Next, extract the data.tar.gz file and put it into $APP_TOP/sioc-smrf-ts01.
 COPY data.tar.gz .
-RUN mkdir -p sioc-smrf-ts01
+RUN mkdir sioc-smrf-ts01
 RUN tar -xf data.tar.gz -C sioc-smrf-ts01/
 RUN mv sioc-smrf-ts01/data/* sioc-smrf-ts01
 RUN rmdir sioc-smrf-ts01/data
 RUN rm data.tar.gz
+# Extract tpg.tar.gz, which is a compiled version of /afs/slac/g/cd/swe/git/repos/package/timing/tpg.git, which contains the scripts hps_peek. Useful for debugging. In the future it would be nice to copy it from there.
+COPY tpg.tar.gz .
+RUN mkdir tpg
+RUN tar -xf tpg.tar.gz -C tpg/
+RUN rm tpg.tar.gz
 # Create the final image
 FROM centos:6.10
 # Remember ARG and ENV do not persist after FROM.
