@@ -15,21 +15,21 @@ ADD scripts/start_ioc.sh .
 ADD config config
 # Build the application
 RUN make distclean && make
-# Copy the data
-COPY data.zip .
-# For example if APP_TOP=/whatever then /whatever/data/ contains sioc-smurf-ts01/.
-RUN unzip data.zip -d data
-RUN rm data.zip
-
+# Next, extract the data.tar.gz file and put it into $APP_TOP/sioc-smrf-ts01.
+COPY data.tar.gz .
+RUN mkdir -p sioc-smrf-ts01
+RUN tar -xf data.tar.gz -C sioc-smrf-ts01/
+RUN mv sioc-smrf-ts01/data/* sioc-smrf-ts01
+RUN rmdir sioc-smrf-ts01/data
+RUN rm data.tar.gz
 # Create the final image
 FROM centos:6.10
-# Remember ARG and ENV not persist after FROM.
+# Remember ARG and ENV do not persist after FROM.
 ARG APP_TOP=/root/Tpg
 ENV EPICS_CA_REPEATER_PORT 5065
 ENV EPICS_CA_AUTO_ADDR_LIST YES
 ENV EPICS_CA_SERVER_PORT 5064
-# For example, if IOC_DATA=/whatever/data/, then /whatever/data/sioc-smrf-ts01/ contains autosave/, etc.
-ENV IOC_DATA $APP_TOP/ioc_data
+ENV IOC_DATA $APP_TOP
 # Copy the IOC produced during the building stage
 COPY --from=builder $APP_TOP $APP_TOP
 # Copy the ipmitool binary
@@ -38,3 +38,4 @@ COPY --from=builder /usr/bin/ipmitool /usr/bin/ipmitool
 WORKDIR $APP_TOP
 # Start the IOC using the default shelfmanager name and slot number
 ENTRYPOINT ["./start_ioc.sh","-S", "shm-smrf-sp01", "-N", "2"]
+
